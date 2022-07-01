@@ -1,9 +1,13 @@
 import { useState } from "react";
 import { flushSync } from "react-dom";
+import { useContext } from 'react'
+import StoreContext from '../context/StoreProvider'
 
 const useTrackLocation = () => {
+
+    const {setLatLong} = useContext(StoreContext);
+
     const[locationErrorMsg, setLocationErrorMsg] = useState("");
-    const[latLong, setLatLong] = useState("");
     const[loading, setLoading] = useState(false);
     
     const success = (position) => {
@@ -31,7 +35,6 @@ const useTrackLocation = () => {
     }
 
     return{
-        latLong,
         handleTrackLocation,
         locationErrorMsg,
         loading
