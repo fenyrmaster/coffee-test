@@ -2,11 +2,12 @@ import { table, findRecord } from "../../lib/airtable";
 
 const createCoffeeStore = async (req, res) => {
     if(req.method === "POST"){
-        const { id, Name, Adress, Neighbourhood, Votes, imgUrl } = req.body;
+        const { id, name, address, neighbourhood, votes, imgUrl } = req.body;
+        console.log(id)
         try{
             if(id){
                 const records = await table.select({
-                    filterByFormula: `id=${id}`
+                    filterByFormula: `id=${JSON.stringify(id)}`
                 }).firstPage();
         
                 if(records.length > 0){
@@ -14,18 +15,18 @@ const createCoffeeStore = async (req, res) => {
                     res.status(200).json({
                         status: "success",
                         meesage: "Store found",
-                        data: data[0]
+                        store: data[0]
                     })
                 } else{
-                    if(id && Name){
+                    if(id && name){
                         const store = await table.create([
                             {
                                 fields: {
                                     id,
-                                    Name,
-                                    Neighbourhood,
-                                    Adress,
-                                    Votes,
+                                    name,
+                                    neighbourhood,
+                                    address,
+                                    votes,
                                     imgUrl
                                 }
                             }

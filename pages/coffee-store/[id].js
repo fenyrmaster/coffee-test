@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import Head from "next/head";
 import Image from "next/image";
+import axios from "axios";
 import { getStoresData } from "../../lib/coffee-stores";
 import { useContext, useEffect, useState } from 'react'
 import StoreContext from '../../context/StoreProvider'
@@ -46,14 +47,33 @@ const CoffeeStore = ({coffeeStore}) => {
         console.log("wut");
     }
 
-    useEffect(() => {
-        if(coffeeStoreNear === undefined || Object.keys(coffeeStoreNear).length === 0){
-            const nearStore = coffeeStores.find(store => {
-                return store.id === id
+    const handleCreateCoffeeStore = async store => {
+        try{
+            const response = await axios.post("http://localhost:3000/api/createCoffeeStore", {
+                name: store?.name,
+                id: id,
+                neighborhood: store?.location.neighborhood,
+                address: store?.location.address,
+                imgUrl: store?.imgUrl,
+                votes: 0
             });
-            nearStore ? setCoffeeStoreNear(nearStore) : setCoffeeStoreNear({});
+            setCoffeeStoreNear(response.data.store);
+        } catch(error){
+            console.log(error)
         }
-    }, []);
+    }
+
+    useEffect(() => {
+        if(id !== undefined){
+            if(coffeeStoreNear === undefined || Object.keys(coffeeStoreNear).length === 0){
+                const nearStore = coffeeStores.find(store => {
+                    return store.id === id
+                });
+                nearStore ? setCoffeeStoreNear(nearStore) : setCoffeeStoreNear({});
+                handleCreateCoffeeStore(nearStore);
+            }
+        }
+    }, [id, coffeeStore]);
 
     if(coffeeStoreNear === undefined || Object.keys(coffeeStoreNear).length === 0){
         return(
@@ -85,11 +105,11 @@ const CoffeeStore = ({coffeeStore}) => {
                 <div className={`${styles.col2} glass`}>
                     <div className={styles.iconWrapper}>
                         <Image src="/icons/places.svg" width="24" height="24"/>
-                        <p className={styles.text}>{coffeeStoreNear?.location.address}</p>
+                        <p className={styles.text}>{coffeeStoreNear.location?.address || coffeeStoreNear.address}</p>
                     </div>
                     <div className={styles.iconWrapper}>
                         <Image src="/icons/nearMe.svg" width="24" height="24"/>
-                        <p className={styles.text}>{coffeeStoreNear?.location.neighborhood ? coffeeStoreNear?.location.neighborhood[0] : "For some reason, it doesnt have a neighborhood" }</p>
+                        <p className={styles.text}>{(coffeeStoreNear.location?.neighborhood || coffeeStoreNear.neighborhood) ? (coffeeStoreNear.location?.neighborhood[0] || coffeeStoreNear.neighborhood) : "For some reason, it doesnt have a neighborhood" }</p>
                     </div>
                     <div className={styles.iconWrapper}>
                         <Image src="/icons/star.svg" width="24" height="24"/>
