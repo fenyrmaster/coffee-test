@@ -42,14 +42,16 @@ const CoffeeStore = ({coffeeStore}) => {
     const { coffeeStores } = useContext(StoreContext);
 
     const [coffeeStoreNear, setCoffeeStoreNear] = useState(coffeeStore);
-    
+    const [ votes, setVotes ] = useState(0);
+
     const handleUpvoteButton = () => {
-        console.log("wut");
+        let newVotes = votes + 1;
+        setVotes(newVotes);
     }
 
     const handleCreateCoffeeStore = async store => {
         try{
-            const response = await axios.post("http://localhost:3000/api/createCoffeeStore", {
+            await axios.post("http://localhost:3000/api/createCoffeeStore", {
                 name: store?.name,
                 id: id,
                 neighborhood: store?.location.neighborhood,
@@ -57,7 +59,6 @@ const CoffeeStore = ({coffeeStore}) => {
                 imgUrl: store?.imgUrl,
                 votes: 0
             });
-            setCoffeeStoreNear(response.data.store);
         } catch(error){
             console.log(error)
         }
@@ -74,6 +75,10 @@ const CoffeeStore = ({coffeeStore}) => {
             }
         }
     }, [id, coffeeStore]);
+
+    if(router.isFallback){
+        return <div>Loading...</div>
+    }
 
     if(coffeeStoreNear === undefined || Object.keys(coffeeStoreNear).length === 0){
         return(
@@ -113,7 +118,7 @@ const CoffeeStore = ({coffeeStore}) => {
                     </div>
                     <div className={styles.iconWrapper}>
                         <Image src="/icons/star.svg" width="24" height="24"/>
-                        <p className={styles.text}>{"1"}</p>
+                        <p className={styles.text}>{votes}</p>
                     </div>
                     <button className={styles.upvoteButton} onClick={() => handleUpvoteButton()}>Vote!</button>
                 </div>

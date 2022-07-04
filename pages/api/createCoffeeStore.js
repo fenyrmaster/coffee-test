@@ -1,23 +1,19 @@
-import { table, findRecord } from "../../lib/airtable";
+import { table, findRecord, findRecordByFilter } from "../../lib/airtable";
 
 const createCoffeeStore = async (req, res) => {
     if(req.method === "POST"){
         const { id, name, address, neighbourhood, votes, imgUrl } = req.body;
-        console.log(id)
         try{
             if(id){
-                const records = await table.select({
-                    filterByFormula: `id=${JSON.stringify(id)}`
-                }).firstPage();
-        
-                if(records.length > 0){
-                    const data = findRecord(records)
+                const data = await findRecordByFilter(id);
+                if(data.length > 0){
                     res.status(200).json({
                         status: "success",
                         meesage: "Store found",
                         store: data[0]
-                    })
-                } else{
+                    });
+                }
+                else{
                     if(id && name){
                         const store = await table.create([
                             {
