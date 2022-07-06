@@ -46,8 +46,12 @@ const CoffeeStore = ({coffeeStore}) => {
     const [coffeeStoreNear, setCoffeeStoreNear] = useState(coffeeStore);
     const [ votes, setVotes ] = useState(0);
 
-    const handleUpvoteButton = () => {
+    const handleUpvoteButton = async () => {
         let newVotes = votes + 1;
+        await axios.patch("http://localhost:3000/api/upvoteCoffeeStore", {
+            votes: newVotes,
+            id: id
+        })
         setVotes(newVotes);
     }
 
@@ -62,7 +66,7 @@ const CoffeeStore = ({coffeeStore}) => {
                 votes: 0
             });
         } catch(error){
-            console.log(error.response)
+            
         }
     }
 
@@ -84,7 +88,6 @@ const CoffeeStore = ({coffeeStore}) => {
 
     useEffect(() => {
         if (data && Object.keys(data).length > 0 && router.isReady){
-            console.log("ejecutando");
             setCoffeeStoreNear(data.store);
             setVotes(data.store.votes);
         }

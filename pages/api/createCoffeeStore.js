@@ -41,7 +41,6 @@ const createCoffeeStore = async (req, res) => {
             }
         }
         catch(error){
-            console.log(error.response);
             res.json({ message: "Something went wrong", data: error });
         }
     }
