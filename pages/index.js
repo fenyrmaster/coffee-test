@@ -33,7 +33,6 @@ export default function Home(props) {
     if(latLong !== ""){
       const getCustomData = async () => {
         try{
-          console.log(latLong)
           const stores = await getStoresData(latLong,30,"cafe");
           setCoffeeStores(stores)
         } catch(error){

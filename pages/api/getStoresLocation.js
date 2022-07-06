@@ -12,7 +12,7 @@ const getStoresLocation = async (req, res) => {
             stores: stores.data.results
         })
     } catch(error){
-        console.log(error);
+        console.log(error.config.data);
     }
 
 }

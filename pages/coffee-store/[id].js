@@ -5,7 +5,9 @@ import Image from "next/image";
 import axios from "axios";
 import { getStoresData } from "../../lib/coffee-stores";
 import { useContext, useEffect, useState } from 'react'
-import StoreContext from '../../context/StoreProvider'
+import StoreContext from '../../context/StoreProvider';
+import { fetcher } from "../../utils/fetcher";
+import useSWR from "swr";
 
 import styles from "../../styles/coffee-store.module.css"
 
@@ -60,7 +62,7 @@ const CoffeeStore = ({coffeeStore}) => {
                 votes: 0
             });
         } catch(error){
-            console.log(error)
+            console.log(error.response)
         }
     }
 
@@ -72,15 +74,27 @@ const CoffeeStore = ({coffeeStore}) => {
                 });
                 nearStore ? setCoffeeStoreNear(nearStore) : setCoffeeStoreNear({});
                 handleCreateCoffeeStore(nearStore);
+            } else{
+                handleCreateCoffeeStore(coffeeStore);
             }
         }
     }, [id, coffeeStore]);
+
+    const { data, error } = useSWR(`http://localhost:3000/api/getCoffeeStoreById?id=${id}`, fetcher);
+
+    useEffect(() => {
+        if (data && Object.keys(data).length > 0 && router.isReady){
+            console.log("ejecutando");
+            setCoffeeStoreNear(data.store);
+            setVotes(data.store.votes);
+        }
+    }, [data, router.isReady]);
 
     if(router.isFallback){
         return <div>Loading...</div>
     }
 
-    if(coffeeStoreNear === undefined || Object.keys(coffeeStoreNear).length === 0){
+    if(error || id === undefined || !data){
         return(
             <h1>Store not found</h1>
         )
