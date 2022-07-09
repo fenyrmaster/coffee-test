@@ -88,6 +88,7 @@ const CoffeeStore = ({coffeeStore}) => {
 
     useEffect(() => {
         if (data && Object.keys(data).length > 0 && router.isReady){
+            console.log(data);
             setCoffeeStoreNear(data.store);
             setVotes(data.store.votes);
         }
