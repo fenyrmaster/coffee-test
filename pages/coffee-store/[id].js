@@ -48,7 +48,7 @@ const CoffeeStore = ({coffeeStore}) => {
 
     const handleUpvoteButton = async () => {
         let newVotes = votes + 1;
-        await axios.patch(`${process.env.NEXT_PUBLIC_ORIGIN}/api/upvoteCoffeeStore`, {
+        await axios.patch(`/api/upvoteCoffeeStore`, {
             votes: newVotes,
             id: id
         })
@@ -57,7 +57,7 @@ const CoffeeStore = ({coffeeStore}) => {
 
     const handleCreateCoffeeStore = async store => {
         try{
-            await axios.post(`${process.env.NEXT_PUBLIC_ORIGIN}/api/createCoffeeStore`, {
+            await axios.post(`/api/createCoffeeStore`, {
                 name: store?.name,
                 id: id,
                 neighborhood: store?.location.neighborhood,
@@ -84,7 +84,7 @@ const CoffeeStore = ({coffeeStore}) => {
         }
     }, [id, coffeeStore]);
 
-    const { data, error } = useSWR(`${process.env.NEXT_PUBLIC_ORIGIN}/api/getCoffeeStoreById?id=${id}`, fetcher);
+    const { data, error } = useSWR(`/api/getCoffeeStoreById?id=${id}`, fetcher);
 
     useEffect(() => {
         if (data && Object.keys(data).length > 0 && router.isReady){
