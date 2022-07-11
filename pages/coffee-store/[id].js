@@ -48,7 +48,7 @@ const CoffeeStore = ({coffeeStore}) => {
 
     const handleUpvoteButton = async () => {
         let newVotes = votes + 1;
-        await axios.patch("http://localhost:3000/api/upvoteCoffeeStore", {
+        await axios.patch("https://coffee-test-one.vercel.app/api/upvoteCoffeeStore", {
             votes: newVotes,
             id: id
         })
@@ -57,7 +57,7 @@ const CoffeeStore = ({coffeeStore}) => {
 
     const handleCreateCoffeeStore = async store => {
         try{
-            await axios.post("http://localhost:3000/api/createCoffeeStore", {
+            await axios.post("https://coffee-test-one.vercel.app/api/createCoffeeStore", {
                 name: store?.name,
                 id: id,
                 neighborhood: store?.location.neighborhood,
@@ -84,7 +84,7 @@ const CoffeeStore = ({coffeeStore}) => {
         }
     }, [id, coffeeStore]);
 
-    const { data, error } = useSWR(`http://localhost:3000/api/getCoffeeStoreById?id=${id}`, fetcher);
+    const { data, error } = useSWR(`https://coffee-test-one.vercel.app/api/getCoffeeStoreById?id=${id}`, fetcher);
 
     useEffect(() => {
         if (data && Object.keys(data).length > 0 && router.isReady){
